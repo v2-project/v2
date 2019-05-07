@@ -1,0 +1,14 @@
+FROM python:2.7
+
+RUN apt-get update
+RUN apt-get install -y net-tools netcat
+
+COPY apt-proxy.sh /proxy-scripts/apt-proxy.sh
+RUN /proxy-scripts/apt-proxy.sh 3142
+
+COPY pypi-proxy.sh /proxy-scripts/pypi-proxy.sh
+RUN /proxy-scripts/pypi-proxy.sh 3141
+
+COPY validate.py /scripts/validate.py
+
+ENTRYPOINT ["python", "/scripts/validate.py"]

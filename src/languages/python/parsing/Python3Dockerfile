@@ -1,0 +1,5 @@
+FROM python:3.7
+
+COPY parse.py visitor.py /scripts/
+
+ENTRYPOINT ["python", "/scripts/parse.py"]

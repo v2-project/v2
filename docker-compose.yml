@@ -1,0 +1,81 @@
+version: '3.7'
+
+services:
+
+  neo4j:
+    image: localhost:5000/v2/neo4j:latest
+    container_name: v2.neo4j
+    restart: always
+    ports:
+    - 7474:7474
+    - 7687:7687
+    volumes:
+    - type: volume
+      source: neo4j
+      target: /data
+
+  apt-cache:
+    image: sameersbn/apt-cacher-ng:latest
+    container_name: v2.apt-cache
+    restart: always
+    ports:
+    - 3142:3142
+    volumes:
+    - type: volume
+      source: apt-cache
+      target: /var/cache/apt-cacher-ng
+
+  registry:
+    image: registry:2
+    container_name: v2.registry
+    restart: always
+    ports:
+    - 5000:5000
+    volumes:
+    - type: volume
+      source: registry
+      target: /var/lib/registry
+
+  devpi:
+    image: muccg/devpi
+    container_name: v2.devpi
+    restart: always
+    ports:
+    - 3141:3141
+    volumes:
+    - type: volume
+      source: devpi
+      target: /data
+
+  redis:
+    image: redislabs/rejson
+    container_name: v2.redis
+    restart: always
+    ports:
+    - 6379:6379
+    volumes:
+    - type: bind
+      source: ./redis.conf
+      target: /etc/redis.conf
+      read_only: yes
+    - type: volume
+      source: redis
+      target: /data
+    command: redis-server /etc/redis.conf --loadmodule /usr/lib/redis/modules/rejson.so
+
+volumes:
+
+  neo4j:
+    name: v2.neo4j.volume
+
+  apt-cache:
+    name: v2.apt-cache.volume
+
+  registry:
+    name: v2.registry.volume
+
+  devpi:
+    name: v2.devpi.volume
+
+  redis:
+    name: v2.redis.volume
